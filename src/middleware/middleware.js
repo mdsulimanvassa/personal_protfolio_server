@@ -32,12 +32,11 @@ const verifyAdmin = async (req, res, next) => {
         
         const query = { email: email };
         const user = await usersCollection.findOne(query);
-        
-        if (user && user?.role === 'admin') {
-            next(); 
-        } else {
+        const isAdmin = user && user?.role === 'admin';
+        if (!isAdmin) {
             return res.status(403).send({ message: 'Forbidden access' });
         }
+        next(); 
     } catch (error) {
         console.error("Error verifying admin role:", error);
         res.status(500).send({ message: 'Internal Server Error' });
