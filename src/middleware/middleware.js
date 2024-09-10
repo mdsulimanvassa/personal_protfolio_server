@@ -36,7 +36,7 @@ const verifyAdmin = async (req, res, next) => {
         if (user && user?.role === 'admin') {
             next(); 
         } else {
-            res.status(403).send({ message: 'Forbidden access' });
+            return res.status(403).send({ message: 'Forbidden access' });
         }
     } catch (error) {
         console.error("Error verifying admin role:", error);
