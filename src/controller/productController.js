@@ -84,6 +84,29 @@ const updateSingleProduct = async (req, res) => {
     } catch (error) {
         res.status(404).send({ message: error.message })
     }
-}
+};
 
-module.exports = { productreade, singleProduct, deleteProduct, updateProduct, productCreate, updateSingleProduct }
+const productPagination = async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12; 
+
+    try {
+        const products = await productCollection.find()
+            .skip((page - 1) * limit)
+            .limit(limit);
+
+        const total = await productCollection.countDocuments(); 
+        const totalPages = Math.ceil(total / limit); 
+
+        res.json({
+            page,
+            limit,
+            totalPages,
+            totalItems: total,
+            data: products
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+    module.exports = { productreade, productPagination, singleProduct, deleteProduct, updateProduct, productCreate, updateSingleProduct }
